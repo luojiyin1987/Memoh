@@ -363,17 +363,28 @@ const modelOptions = computed(() =>
 )
 
 const allDays = computed(() => {
-  const daySet = new Set<string>()
-  for (const row of usageData.value?.chat ?? []) {
-    if (row.day) daySet.add(row.day)
+  const from = new Date(dateFrom.value + 'T00:00:00')
+  const toExclusive = new Date(dateTo.value + 'T00:00:00')
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const end = new Date(Math.min(toExclusive.getTime(), today.getTime() + 86400000))
+  const days: string[] = []
+  const cursor = new Date(from)
+  while (cursor < end) {
+    const y = cursor.getFullYear()
+    const m = String(cursor.getMonth() + 1).padStart(2, '0')
+    const d = String(cursor.getDate()).padStart(2, '0')
+    days.push(`${y}-${m}-${d}`)
+    cursor.setDate(cursor.getDate() + 1)
   }
-  for (const row of usageData.value?.heartbeat ?? []) {
-    if (row.day) daySet.add(row.day)
-  }
-  return [...daySet].sort()
+  return days
 })
 
-const hasData = computed(() => allDays.value.length > 0 || byModelData.value.length > 0)
+const hasData = computed(() => {
+  const chat = usageData.value?.chat ?? []
+  const heartbeat = usageData.value?.heartbeat ?? []
+  return chat.length > 0 || heartbeat.length > 0 || byModelData.value.length > 0
+})
 
 function buildDayMap(rows: HandlersDailyTokenUsage[] | undefined) {
   const map = new Map<string, HandlersDailyTokenUsage>()
@@ -606,7 +617,10 @@ const cacheHitRateOption = computed(() => {
 })
 
 function formatDate(d: Date): string {
-  return d.toISOString().slice(0, 10)
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${y}-${m}-${day}`
 }
 
 function formatNumber(n: number): string {
