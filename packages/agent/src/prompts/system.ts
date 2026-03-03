@@ -80,6 +80,8 @@ export const system = ({
     'time-now': date.toISOString(),
   }
 
+  console.log('inbox', inbox)
+
   return `
 ---
 ${stringify(staticHeaders)}
