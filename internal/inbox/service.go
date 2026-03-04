@@ -198,7 +198,7 @@ func (s *Service) Search(ctx context.Context, botID string, req SearchRequest) (
 	}
 	params := sqlc.SearchInboxItemsParams{
 		BotID:    botUUID,
-		Query:    pgtype.Text{String: req.Query, Valid: true},
+		Query:    textOrNull(req.Query),
 		MaxCount: int32(limit),
 	}
 	if req.StartTime != nil {

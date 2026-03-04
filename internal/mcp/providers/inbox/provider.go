@@ -65,7 +65,7 @@ func (e *Executor) ListTools(ctx context.Context, session mcpgw.ToolSessionConte
 						"description": "Whether to include already-read items (default true)",
 					},
 				},
-				"required": []string{"query"},
+				"required": []string{},
 			},
 		},
 	}, nil
@@ -80,9 +80,6 @@ func (e *Executor) CallTool(ctx context.Context, session mcpgw.ToolSessionContex
 	}
 
 	query := mcpgw.StringArg(arguments, "query")
-	if query == "" {
-		return mcpgw.BuildToolErrorResult("query is required"), nil
-	}
 	botID := strings.TrimSpace(session.BotID)
 	if botID == "" {
 		return mcpgw.BuildToolErrorResult("bot_id is required"), nil

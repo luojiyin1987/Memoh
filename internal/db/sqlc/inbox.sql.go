@@ -246,7 +246,7 @@ func (q *Queries) MarkInboxItemsRead(ctx context.Context, arg MarkInboxItemsRead
 const searchInboxItems = `-- name: SearchInboxItems :many
 SELECT id, bot_id, source, header, content, action, is_read, created_at, read_at FROM bot_inbox
 WHERE bot_id = $1
-  AND content ILIKE '%' || $2 || '%'
+  AND ($2::text IS NULL OR content ILIKE '%' || $2::text || '%')
   AND ($3::timestamptz IS NULL OR created_at >= $3::timestamptz)
   AND ($4::timestamptz IS NULL OR created_at <= $4::timestamptz)
   AND ($5::boolean IS NULL OR $5::boolean = TRUE OR is_read = FALSE)

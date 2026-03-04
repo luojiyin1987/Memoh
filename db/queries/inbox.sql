@@ -35,7 +35,7 @@ WHERE bot_id = sqlc.arg(bot_id)
 -- name: SearchInboxItems :many
 SELECT * FROM bot_inbox
 WHERE bot_id = sqlc.arg(bot_id)
-  AND content ILIKE '%' || sqlc.arg(query) || '%'
+  AND (sqlc.narg(query)::text IS NULL OR content ILIKE '%' || sqlc.narg(query)::text || '%')
   AND (sqlc.narg(start_time)::timestamptz IS NULL OR created_at >= sqlc.narg(start_time)::timestamptz)
   AND (sqlc.narg(end_time)::timestamptz IS NULL OR created_at <= sqlc.narg(end_time)::timestamptz)
   AND (sqlc.narg(include_read)::boolean IS NULL OR sqlc.narg(include_read)::boolean = TRUE OR is_read = FALSE)
