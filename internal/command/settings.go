@@ -22,8 +22,6 @@ func (h *Handler) buildSettingsGroup() *CommandGroup {
 			return formatKV([]kv{
 				{"Language", s.Language},
 				{"ACL Default Effect", s.AclDefaultEffect},
-				{"Max Context Load Time", fmt.Sprintf("%d min", s.MaxContextLoadTime)},
-				{"Max Context Tokens", strconv.Itoa(s.MaxContextTokens)},
 				{"Reasoning Enabled", boolStr(s.ReasoningEnabled)},
 				{"Reasoning Effort", s.ReasoningEffort},
 				{"Heartbeat Enabled", boolStr(s.HeartbeatEnabled)},
@@ -75,20 +73,6 @@ func (h *Handler) buildSettingsGroup() *CommandGroup {
 						return fmt.Sprintf("Invalid heartbeat_interval: %s", args[i]), nil
 					}
 					req.HeartbeatInterval = &val
-				case "--max_context_load_time":
-					i++
-					val, err := strconv.Atoi(args[i])
-					if err != nil {
-						return fmt.Sprintf("Invalid max_context_load_time: %s", args[i]), nil
-					}
-					req.MaxContextLoadTime = &val
-				case "--max_context_tokens":
-					i++
-					val, err := strconv.Atoi(args[i])
-					if err != nil {
-						return fmt.Sprintf("Invalid max_context_tokens: %s", args[i]), nil
-					}
-					req.MaxContextTokens = &val
 				case "--chat_model_id":
 					i++
 					req.ChatModelID = args[i]
@@ -118,8 +102,6 @@ func settingsUpdateUsage() string {
 		"- --reasoning_effort <low|medium|high>\n" +
 		"- --heartbeat_enabled <true|false>\n" +
 		"- --heartbeat_interval <minutes>\n" +
-		"- --max_context_load_time <minutes>\n" +
-		"- --max_context_tokens <count>\n" +
 		"- --chat_model_id <id>\n" +
 		"- --heartbeat_model_id <id>"
 }

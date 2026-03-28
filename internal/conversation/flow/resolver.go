@@ -153,8 +153,6 @@ func (r *Resolver) resolve(ctx context.Context, req conversation.ChatRequest) (r
 		return resolvedContext{}, errors.New("chat id is required")
 	}
 
-	skipHistory := req.MaxContextLoadTime < 0
-
 	botSettings, err := r.loadBotSettings(ctx, req.BotID)
 	if err != nil {
 		return resolvedContext{}, err
@@ -176,55 +174,23 @@ func (r *Resolver) resolve(ctx context.Context, req conversation.ChatRequest) (r
 	}
 	clientType := provider.ClientType
 
-	maxCtx := coalescePositiveInt(req.MaxContextLoadTime, botSettings.MaxContextLoadTime, defaultMaxContextMinutes)
-	maxTokens := botSettings.MaxContextTokens
-
 	memoryMsg := r.loadMemoryContextMessage(ctx, req)
 	reqMessages := pruneMessagesForGateway(nonNilModelMessages(req.Messages))
 	if memoryMsg != nil {
 		pruned, _ := pruneMessageForGateway(*memoryMsg)
 		memoryMsg = &pruned
 	}
-	var overhead int
-	if memoryMsg != nil {
-		overhead += estimateMessageTokens(*memoryMsg)
-	}
-	for _, m := range reqMessages {
-		overhead += estimateMessageTokens(m)
-	}
-	const systemPromptReserve = 4096
-	overhead += systemPromptReserve
-
-	historyBudget := maxTokens - overhead
-	if maxTokens > 0 && historyBudget <= 0 {
-		historyBudget = 1
-	} else if historyBudget < 0 {
-		historyBudget = 0
-	}
-
-	r.logger.Debug("context token budget",
-		slog.Int("max_tokens", maxTokens),
-		slog.Int("overhead", overhead),
-		slog.Int("system_prompt_reserve", systemPromptReserve),
-		slog.Int("history_budget", historyBudget),
-	)
 
 	var messages []conversation.ModelMessage
-	if !skipHistory && r.conversationSvc != nil {
-		loaded, loadErr := r.loadMessages(ctx, req.ChatID, req.SessionID, maxCtx)
+	if r.conversationSvc != nil {
+		loaded, loadErr := r.loadMessages(ctx, req.ChatID, req.SessionID, defaultMaxContextMinutes)
 		if loadErr != nil {
 			return resolvedContext{}, loadErr
 		}
 		loaded = pruneHistoryForGateway(loaded)
 		loaded = dedupePersistedCurrentUserMessage(loaded, req)
 		loaded = r.replaceCompactedMessages(ctx, loaded)
-		messages = trimMessagesByTokens(r.logger, loaded, historyBudget)
-		r.logger.Debug("context trim result",
-			slog.Int("loaded_messages", len(loaded)),
-			slog.Int("kept_messages", len(messages)),
-			slog.Int("trimmed_messages", len(loaded)-len(messages)),
-			slog.Int("history_budget", historyBudget),
-		)
+		messages = trimMessagesByTokens(r.logger, loaded, 0)
 	}
 	if memoryMsg != nil {
 		messages = append(messages, *memoryMsg)

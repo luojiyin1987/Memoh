@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
-	"math"
 	"strings"
 
 	"github.com/google/uuid"
@@ -70,13 +69,7 @@ func (s *Service) UpsertBot(ctx context.Context, botID string, req UpsertRequest
 	if err != nil {
 		return Settings{}, err
 	}
-	current := normalizeBotSetting(botRow.MaxContextLoadTime, botRow.MaxContextTokens, botRow.Language, aclDefaultEffect, botRow.ReasoningEnabled, botRow.ReasoningEffort, botRow.HeartbeatEnabled, botRow.HeartbeatInterval, botRow.CompactionEnabled, botRow.CompactionThreshold)
-	if req.MaxContextLoadTime != nil && *req.MaxContextLoadTime > 0 {
-		current.MaxContextLoadTime = *req.MaxContextLoadTime
-	}
-	if req.MaxContextTokens != nil && *req.MaxContextTokens >= 0 {
-		current.MaxContextTokens = *req.MaxContextTokens
-	}
+	current := normalizeBotSetting(botRow.Language, aclDefaultEffect, botRow.ReasoningEnabled, botRow.ReasoningEffort, botRow.HeartbeatEnabled, botRow.HeartbeatInterval, botRow.CompactionEnabled, botRow.CompactionThreshold)
 	if strings.TrimSpace(req.Language) != "" {
 		current.Language = strings.TrimSpace(req.Language)
 	}
@@ -167,25 +160,16 @@ func (s *Service) UpsertBot(ctx context.Context, botID string, req UpsertRequest
 		}
 		browserContextUUID = ctxID
 	}
-	if current.MaxContextLoadTime < math.MinInt32 || current.MaxContextLoadTime > math.MaxInt32 ||
-		current.MaxContextTokens < math.MinInt32 || current.MaxContextTokens > math.MaxInt32 ||
-		current.HeartbeatInterval < math.MinInt32 || current.HeartbeatInterval > math.MaxInt32 ||
-		current.CompactionThreshold < math.MinInt32 || current.CompactionThreshold > math.MaxInt32 {
-		return Settings{}, errors.New("settings numeric value out of int32 range")
-	}
-
 	updated, err := s.queries.UpsertBotSettings(ctx, sqlc.UpsertBotSettingsParams{
 		ID:                  pgID,
-		MaxContextLoadTime:  int32(current.MaxContextLoadTime), //nolint:gosec // range validated above
-		MaxContextTokens:    int32(current.MaxContextTokens),
 		Language:            current.Language,
 		ReasoningEnabled:    current.ReasoningEnabled,
 		ReasoningEffort:     current.ReasoningEffort,
 		HeartbeatEnabled:    current.HeartbeatEnabled,
-		HeartbeatInterval:   int32(current.HeartbeatInterval),
+		HeartbeatInterval:   int32(current.HeartbeatInterval), //nolint:gosec // bounded by positive-only setter above
 		HeartbeatPrompt:     "",
 		CompactionEnabled:   current.CompactionEnabled,
-		CompactionThreshold: int32(current.CompactionThreshold), //nolint:gosec // range validated above
+		CompactionThreshold: int32(current.CompactionThreshold), //nolint:gosec // bounded by non-negative setter above
 		ChatModelID:         chatModelUUID,
 		HeartbeatModelID:    heartbeatModelUUID,
 		CompactionModelID:   compactionModelUUID,
@@ -225,10 +209,8 @@ func (s *Service) Delete(ctx context.Context, botID string) error {
 	return nil
 }
 
-func normalizeBotSetting(maxContextLoadTime int32, maxContextTokens int32, language string, aclDefaultEffect string, reasoningEnabled bool, reasoningEffort string, heartbeatEnabled bool, heartbeatInterval int32, compactionEnabled bool, compactionThreshold int32) Settings {
+func normalizeBotSetting(language string, aclDefaultEffect string, reasoningEnabled bool, reasoningEffort string, heartbeatEnabled bool, heartbeatInterval int32, compactionEnabled bool, compactionThreshold int32) Settings {
 	settings := Settings{
-		MaxContextLoadTime:  int(maxContextLoadTime),
-		MaxContextTokens:    int(maxContextTokens),
 		Language:            strings.TrimSpace(language),
 		AclDefaultEffect:    strings.TrimSpace(aclDefaultEffect),
 		ReasoningEnabled:    reasoningEnabled,
@@ -237,12 +219,6 @@ func normalizeBotSetting(maxContextLoadTime int32, maxContextTokens int32, langu
 		HeartbeatInterval:   int(heartbeatInterval),
 		CompactionEnabled:   compactionEnabled,
 		CompactionThreshold: int(compactionThreshold),
-	}
-	if settings.MaxContextLoadTime <= 0 {
-		settings.MaxContextLoadTime = DefaultMaxContextLoadTime
-	}
-	if settings.MaxContextTokens < 0 {
-		settings.MaxContextTokens = 0
 	}
 	if settings.Language == "" {
 		settings.Language = DefaultLanguage
@@ -273,8 +249,6 @@ func isValidReasoningEffort(effort string) bool {
 
 func normalizeBotSettingsReadRow(row sqlc.GetSettingsByBotIDRow) Settings {
 	return normalizeBotSettingsFields(
-		row.MaxContextLoadTime,
-		row.MaxContextTokens,
 		row.Language,
 		row.ReasoningEnabled,
 		row.ReasoningEffort,
@@ -295,8 +269,6 @@ func normalizeBotSettingsReadRow(row sqlc.GetSettingsByBotIDRow) Settings {
 
 func normalizeBotSettingsWriteRow(row sqlc.UpsertBotSettingsRow) Settings {
 	return normalizeBotSettingsFields(
-		row.MaxContextLoadTime,
-		row.MaxContextTokens,
 		row.Language,
 		row.ReasoningEnabled,
 		row.ReasoningEffort,
@@ -316,8 +288,6 @@ func normalizeBotSettingsWriteRow(row sqlc.UpsertBotSettingsRow) Settings {
 }
 
 func normalizeBotSettingsFields(
-	maxContextLoadTime int32,
-	maxContextTokens int32,
 	language string,
 	reasoningEnabled bool,
 	reasoningEffort string,
@@ -334,7 +304,7 @@ func normalizeBotSettingsFields(
 	ttsModelID pgtype.UUID,
 	browserContextID pgtype.UUID,
 ) Settings {
-	settings := normalizeBotSetting(maxContextLoadTime, maxContextTokens, language, "", reasoningEnabled, reasoningEffort, heartbeatEnabled, heartbeatInterval, compactionEnabled, compactionThreshold)
+	settings := normalizeBotSetting(language, "", reasoningEnabled, reasoningEffort, heartbeatEnabled, heartbeatInterval, compactionEnabled, compactionThreshold)
 	if chatModelID.Valid {
 		settings.ChatModelID = uuid.UUID(chatModelID.Bytes).String()
 	}

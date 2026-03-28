@@ -1,8 +1,6 @@
 -- name: GetSettingsByBotID :one
 SELECT
   bots.id AS bot_id,
-  bots.max_context_load_time,
-  bots.max_context_tokens,
   bots.language,
   bots.reasoning_enabled,
   bots.reasoning_effort,
@@ -33,9 +31,7 @@ WHERE bots.id = $1;
 -- name: UpsertBotSettings :one
 WITH updated AS (
   UPDATE bots
-  SET max_context_load_time = sqlc.arg(max_context_load_time),
-      max_context_tokens = sqlc.arg(max_context_tokens),
-      language = sqlc.arg(language),
+  SET language = sqlc.arg(language),
       reasoning_enabled = sqlc.arg(reasoning_enabled),
       reasoning_effort = sqlc.arg(reasoning_effort),
       heartbeat_enabled = sqlc.arg(heartbeat_enabled),
@@ -53,12 +49,10 @@ WITH updated AS (
       browser_context_id = COALESCE(sqlc.narg(browser_context_id)::uuid, bots.browser_context_id),
       updated_at = now()
   WHERE bots.id = sqlc.arg(id)
-  RETURNING bots.id, bots.max_context_load_time, bots.max_context_tokens, bots.language, bots.reasoning_enabled, bots.reasoning_effort, bots.heartbeat_enabled, bots.heartbeat_interval, bots.heartbeat_prompt, bots.compaction_enabled, bots.compaction_threshold, bots.chat_model_id, bots.heartbeat_model_id, bots.compaction_model_id, bots.title_model_id, bots.search_provider_id, bots.memory_provider_id, bots.tts_model_id, bots.browser_context_id
+  RETURNING bots.id, bots.language, bots.reasoning_enabled, bots.reasoning_effort, bots.heartbeat_enabled, bots.heartbeat_interval, bots.heartbeat_prompt, bots.compaction_enabled, bots.compaction_threshold, bots.chat_model_id, bots.heartbeat_model_id, bots.compaction_model_id, bots.title_model_id, bots.search_provider_id, bots.memory_provider_id, bots.tts_model_id, bots.browser_context_id
 )
 SELECT
   updated.id AS bot_id,
-  updated.max_context_load_time,
-  updated.max_context_tokens,
   updated.language,
   updated.reasoning_enabled,
   updated.reasoning_effort,
@@ -87,9 +81,7 @@ LEFT JOIN browser_contexts ON browser_contexts.id = updated.browser_context_id;
 
 -- name: DeleteSettingsByBotID :exec
 UPDATE bots
-SET max_context_load_time = 1440,
-    max_context_tokens = 0,
-    language = 'auto',
+SET language = 'auto',
     reasoning_enabled = false,
     reasoning_effort = 'medium',
     heartbeat_enabled = false,

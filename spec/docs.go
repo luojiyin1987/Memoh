@@ -12397,12 +12397,6 @@ const docTemplate = `{
                 "language": {
                     "type": "string"
                 },
-                "max_context_load_time": {
-                    "type": "integer"
-                },
-                "max_context_tokens": {
-                    "type": "integer"
-                },
                 "memory_provider_id": {
                     "type": "string"
                 },
@@ -12455,12 +12449,6 @@ const docTemplate = `{
                 },
                 "language": {
                     "type": "string"
-                },
-                "max_context_load_time": {
-                    "type": "integer"
-                },
-                "max_context_tokens": {
-                    "type": "integer"
                 },
                 "memory_provider_id": {
                     "type": "string"

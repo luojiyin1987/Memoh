@@ -804,8 +804,6 @@
       "memoryHealthUnavailable": "暂不可用",
       "ttsModel": "语音合成模型",
       "ttsModelPlaceholder": "选择语音合成模型",
-      "maxContextLoadTime": "最大上下文加载时间",
-      "maxContextTokens": "最大上下文Token数",
       "language": "语言",
       "reasoningEnabled": "启用推理",
       "reasoningEffort": "推理等级",

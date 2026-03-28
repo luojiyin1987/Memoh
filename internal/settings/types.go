@@ -1,10 +1,9 @@
 package settings
 
 const (
-	DefaultMaxContextLoadTime = 24 * 60
-	DefaultLanguage           = "auto"
-	DefaultReasoningEffort    = "medium"
-	DefaultHeartbeatInterval  = 30
+	DefaultLanguage          = "auto"
+	DefaultReasoningEffort   = "medium"
+	DefaultHeartbeatInterval = 30
 )
 
 type Settings struct {
@@ -13,8 +12,6 @@ type Settings struct {
 	MemoryProviderID    string `json:"memory_provider_id"`
 	TtsModelID          string `json:"tts_model_id"`
 	BrowserContextID    string `json:"browser_context_id"`
-	MaxContextLoadTime  int    `json:"max_context_load_time"`
-	MaxContextTokens    int    `json:"max_context_tokens"`
 	Language            string `json:"language"`
 	AclDefaultEffect    string `json:"acl_default_effect"`
 	ReasoningEnabled    bool   `json:"reasoning_enabled"`
@@ -34,8 +31,6 @@ type UpsertRequest struct {
 	MemoryProviderID    string  `json:"memory_provider_id,omitempty"`
 	TtsModelID          string  `json:"tts_model_id,omitempty"`
 	BrowserContextID    string  `json:"browser_context_id,omitempty"`
-	MaxContextLoadTime  *int    `json:"max_context_load_time,omitempty"`
-	MaxContextTokens    *int    `json:"max_context_tokens,omitempty"`
 	Language            string  `json:"language,omitempty"`
 	AclDefaultEffect    string  `json:"acl_default_effect,omitempty"`
 	ReasoningEnabled    *bool   `json:"reasoning_enabled,omitempty"`

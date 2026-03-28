@@ -14,7 +14,7 @@ import (
 const createBot = `-- name: CreateBot :one
 INSERT INTO bots (owner_user_id, display_name, avatar_url, timezone, is_active, metadata, status)
 VALUES ($1, $2, $3, $4, $5, $6, $7)
-RETURNING id, owner_user_id, display_name, avatar_url, timezone, is_active, status, max_context_load_time, max_context_tokens, language, reasoning_enabled, reasoning_effort, chat_model_id, search_provider_id, memory_provider_id, heartbeat_enabled, heartbeat_interval, heartbeat_prompt, metadata, created_at, updated_at
+RETURNING id, owner_user_id, display_name, avatar_url, timezone, is_active, status, language, reasoning_enabled, reasoning_effort, chat_model_id, search_provider_id, memory_provider_id, heartbeat_enabled, heartbeat_interval, heartbeat_prompt, metadata, created_at, updated_at
 `
 
 type CreateBotParams struct {
@@ -28,27 +28,25 @@ type CreateBotParams struct {
 }
 
 type CreateBotRow struct {
-	ID                 pgtype.UUID        `json:"id"`
-	OwnerUserID        pgtype.UUID        `json:"owner_user_id"`
-	DisplayName        pgtype.Text        `json:"display_name"`
-	AvatarUrl          pgtype.Text        `json:"avatar_url"`
-	Timezone           pgtype.Text        `json:"timezone"`
-	IsActive           bool               `json:"is_active"`
-	Status             string             `json:"status"`
-	MaxContextLoadTime int32              `json:"max_context_load_time"`
-	MaxContextTokens   int32              `json:"max_context_tokens"`
-	Language           string             `json:"language"`
-	ReasoningEnabled   bool               `json:"reasoning_enabled"`
-	ReasoningEffort    string             `json:"reasoning_effort"`
-	ChatModelID        pgtype.UUID        `json:"chat_model_id"`
-	SearchProviderID   pgtype.UUID        `json:"search_provider_id"`
-	MemoryProviderID   pgtype.UUID        `json:"memory_provider_id"`
-	HeartbeatEnabled   bool               `json:"heartbeat_enabled"`
-	HeartbeatInterval  int32              `json:"heartbeat_interval"`
-	HeartbeatPrompt    string             `json:"heartbeat_prompt"`
-	Metadata           []byte             `json:"metadata"`
-	CreatedAt          pgtype.Timestamptz `json:"created_at"`
-	UpdatedAt          pgtype.Timestamptz `json:"updated_at"`
+	ID                pgtype.UUID        `json:"id"`
+	OwnerUserID       pgtype.UUID        `json:"owner_user_id"`
+	DisplayName       pgtype.Text        `json:"display_name"`
+	AvatarUrl         pgtype.Text        `json:"avatar_url"`
+	Timezone          pgtype.Text        `json:"timezone"`
+	IsActive          bool               `json:"is_active"`
+	Status            string             `json:"status"`
+	Language          string             `json:"language"`
+	ReasoningEnabled  bool               `json:"reasoning_enabled"`
+	ReasoningEffort   string             `json:"reasoning_effort"`
+	ChatModelID       pgtype.UUID        `json:"chat_model_id"`
+	SearchProviderID  pgtype.UUID        `json:"search_provider_id"`
+	MemoryProviderID  pgtype.UUID        `json:"memory_provider_id"`
+	HeartbeatEnabled  bool               `json:"heartbeat_enabled"`
+	HeartbeatInterval int32              `json:"heartbeat_interval"`
+	HeartbeatPrompt   string             `json:"heartbeat_prompt"`
+	Metadata          []byte             `json:"metadata"`
+	CreatedAt         pgtype.Timestamptz `json:"created_at"`
+	UpdatedAt         pgtype.Timestamptz `json:"updated_at"`
 }
 
 func (q *Queries) CreateBot(ctx context.Context, arg CreateBotParams) (CreateBotRow, error) {
@@ -70,8 +68,6 @@ func (q *Queries) CreateBot(ctx context.Context, arg CreateBotParams) (CreateBot
 		&i.Timezone,
 		&i.IsActive,
 		&i.Status,
-		&i.MaxContextLoadTime,
-		&i.MaxContextTokens,
 		&i.Language,
 		&i.ReasoningEnabled,
 		&i.ReasoningEffort,
@@ -98,7 +94,7 @@ func (q *Queries) DeleteBotByID(ctx context.Context, id pgtype.UUID) error {
 }
 
 const getBotByID = `-- name: GetBotByID :one
-SELECT id, owner_user_id, display_name, avatar_url, timezone, is_active, status, max_context_load_time, max_context_tokens, language, reasoning_enabled, reasoning_effort, chat_model_id, search_provider_id, memory_provider_id, heartbeat_enabled, heartbeat_interval, heartbeat_prompt, compaction_enabled, compaction_threshold, compaction_model_id, metadata, created_at, updated_at
+SELECT id, owner_user_id, display_name, avatar_url, timezone, is_active, status, language, reasoning_enabled, reasoning_effort, chat_model_id, search_provider_id, memory_provider_id, heartbeat_enabled, heartbeat_interval, heartbeat_prompt, compaction_enabled, compaction_threshold, compaction_model_id, metadata, created_at, updated_at
 FROM bots
 WHERE id = $1
 `
@@ -111,8 +107,6 @@ type GetBotByIDRow struct {
 	Timezone            pgtype.Text        `json:"timezone"`
 	IsActive            bool               `json:"is_active"`
 	Status              string             `json:"status"`
-	MaxContextLoadTime  int32              `json:"max_context_load_time"`
-	MaxContextTokens    int32              `json:"max_context_tokens"`
 	Language            string             `json:"language"`
 	ReasoningEnabled    bool               `json:"reasoning_enabled"`
 	ReasoningEffort     string             `json:"reasoning_effort"`
@@ -141,8 +135,6 @@ func (q *Queries) GetBotByID(ctx context.Context, id pgtype.UUID) (GetBotByIDRow
 		&i.Timezone,
 		&i.IsActive,
 		&i.Status,
-		&i.MaxContextLoadTime,
-		&i.MaxContextTokens,
 		&i.Language,
 		&i.ReasoningEnabled,
 		&i.ReasoningEffort,
@@ -163,34 +155,32 @@ func (q *Queries) GetBotByID(ctx context.Context, id pgtype.UUID) (GetBotByIDRow
 }
 
 const listBotsByOwner = `-- name: ListBotsByOwner :many
-SELECT id, owner_user_id, display_name, avatar_url, timezone, is_active, status, max_context_load_time, max_context_tokens, language, reasoning_enabled, reasoning_effort, chat_model_id, search_provider_id, memory_provider_id, heartbeat_enabled, heartbeat_interval, heartbeat_prompt, metadata, created_at, updated_at
+SELECT id, owner_user_id, display_name, avatar_url, timezone, is_active, status, language, reasoning_enabled, reasoning_effort, chat_model_id, search_provider_id, memory_provider_id, heartbeat_enabled, heartbeat_interval, heartbeat_prompt, metadata, created_at, updated_at
 FROM bots
 WHERE owner_user_id = $1
 ORDER BY created_at DESC
 `
 
 type ListBotsByOwnerRow struct {
-	ID                 pgtype.UUID        `json:"id"`
-	OwnerUserID        pgtype.UUID        `json:"owner_user_id"`
-	DisplayName        pgtype.Text        `json:"display_name"`
-	AvatarUrl          pgtype.Text        `json:"avatar_url"`
-	Timezone           pgtype.Text        `json:"timezone"`
-	IsActive           bool               `json:"is_active"`
-	Status             string             `json:"status"`
-	MaxContextLoadTime int32              `json:"max_context_load_time"`
-	MaxContextTokens   int32              `json:"max_context_tokens"`
-	Language           string             `json:"language"`
-	ReasoningEnabled   bool               `json:"reasoning_enabled"`
-	ReasoningEffort    string             `json:"reasoning_effort"`
-	ChatModelID        pgtype.UUID        `json:"chat_model_id"`
-	SearchProviderID   pgtype.UUID        `json:"search_provider_id"`
-	MemoryProviderID   pgtype.UUID        `json:"memory_provider_id"`
-	HeartbeatEnabled   bool               `json:"heartbeat_enabled"`
-	HeartbeatInterval  int32              `json:"heartbeat_interval"`
-	HeartbeatPrompt    string             `json:"heartbeat_prompt"`
-	Metadata           []byte             `json:"metadata"`
-	CreatedAt          pgtype.Timestamptz `json:"created_at"`
-	UpdatedAt          pgtype.Timestamptz `json:"updated_at"`
+	ID                pgtype.UUID        `json:"id"`
+	OwnerUserID       pgtype.UUID        `json:"owner_user_id"`
+	DisplayName       pgtype.Text        `json:"display_name"`
+	AvatarUrl         pgtype.Text        `json:"avatar_url"`
+	Timezone          pgtype.Text        `json:"timezone"`
+	IsActive          bool               `json:"is_active"`
+	Status            string             `json:"status"`
+	Language          string             `json:"language"`
+	ReasoningEnabled  bool               `json:"reasoning_enabled"`
+	ReasoningEffort   string             `json:"reasoning_effort"`
+	ChatModelID       pgtype.UUID        `json:"chat_model_id"`
+	SearchProviderID  pgtype.UUID        `json:"search_provider_id"`
+	MemoryProviderID  pgtype.UUID        `json:"memory_provider_id"`
+	HeartbeatEnabled  bool               `json:"heartbeat_enabled"`
+	HeartbeatInterval int32              `json:"heartbeat_interval"`
+	HeartbeatPrompt   string             `json:"heartbeat_prompt"`
+	Metadata          []byte             `json:"metadata"`
+	CreatedAt         pgtype.Timestamptz `json:"created_at"`
+	UpdatedAt         pgtype.Timestamptz `json:"updated_at"`
 }
 
 func (q *Queries) ListBotsByOwner(ctx context.Context, ownerUserID pgtype.UUID) ([]ListBotsByOwnerRow, error) {
@@ -210,8 +200,6 @@ func (q *Queries) ListBotsByOwner(ctx context.Context, ownerUserID pgtype.UUID) 
 			&i.Timezone,
 			&i.IsActive,
 			&i.Status,
-			&i.MaxContextLoadTime,
-			&i.MaxContextTokens,
 			&i.Language,
 			&i.ReasoningEnabled,
 			&i.ReasoningEffort,
@@ -280,7 +268,7 @@ UPDATE bots
 SET owner_user_id = $2,
     updated_at = now()
 WHERE id = $1
-RETURNING id, owner_user_id, display_name, avatar_url, timezone, is_active, status, max_context_load_time, max_context_tokens, language, reasoning_enabled, reasoning_effort, chat_model_id, search_provider_id, memory_provider_id, heartbeat_enabled, heartbeat_interval, heartbeat_prompt, metadata, created_at, updated_at
+RETURNING id, owner_user_id, display_name, avatar_url, timezone, is_active, status, language, reasoning_enabled, reasoning_effort, chat_model_id, search_provider_id, memory_provider_id, heartbeat_enabled, heartbeat_interval, heartbeat_prompt, metadata, created_at, updated_at
 `
 
 type UpdateBotOwnerParams struct {
@@ -289,27 +277,25 @@ type UpdateBotOwnerParams struct {
 }
 
 type UpdateBotOwnerRow struct {
-	ID                 pgtype.UUID        `json:"id"`
-	OwnerUserID        pgtype.UUID        `json:"owner_user_id"`
-	DisplayName        pgtype.Text        `json:"display_name"`
-	AvatarUrl          pgtype.Text        `json:"avatar_url"`
-	Timezone           pgtype.Text        `json:"timezone"`
-	IsActive           bool               `json:"is_active"`
-	Status             string             `json:"status"`
-	MaxContextLoadTime int32              `json:"max_context_load_time"`
-	MaxContextTokens   int32              `json:"max_context_tokens"`
-	Language           string             `json:"language"`
-	ReasoningEnabled   bool               `json:"reasoning_enabled"`
-	ReasoningEffort    string             `json:"reasoning_effort"`
-	ChatModelID        pgtype.UUID        `json:"chat_model_id"`
-	SearchProviderID   pgtype.UUID        `json:"search_provider_id"`
-	MemoryProviderID   pgtype.UUID        `json:"memory_provider_id"`
-	HeartbeatEnabled   bool               `json:"heartbeat_enabled"`
-	HeartbeatInterval  int32              `json:"heartbeat_interval"`
-	HeartbeatPrompt    string             `json:"heartbeat_prompt"`
-	Metadata           []byte             `json:"metadata"`
-	CreatedAt          pgtype.Timestamptz `json:"created_at"`
-	UpdatedAt          pgtype.Timestamptz `json:"updated_at"`
+	ID                pgtype.UUID        `json:"id"`
+	OwnerUserID       pgtype.UUID        `json:"owner_user_id"`
+	DisplayName       pgtype.Text        `json:"display_name"`
+	AvatarUrl         pgtype.Text        `json:"avatar_url"`
+	Timezone          pgtype.Text        `json:"timezone"`
+	IsActive          bool               `json:"is_active"`
+	Status            string             `json:"status"`
+	Language          string             `json:"language"`
+	ReasoningEnabled  bool               `json:"reasoning_enabled"`
+	ReasoningEffort   string             `json:"reasoning_effort"`
+	ChatModelID       pgtype.UUID        `json:"chat_model_id"`
+	SearchProviderID  pgtype.UUID        `json:"search_provider_id"`
+	MemoryProviderID  pgtype.UUID        `json:"memory_provider_id"`
+	HeartbeatEnabled  bool               `json:"heartbeat_enabled"`
+	HeartbeatInterval int32              `json:"heartbeat_interval"`
+	HeartbeatPrompt   string             `json:"heartbeat_prompt"`
+	Metadata          []byte             `json:"metadata"`
+	CreatedAt         pgtype.Timestamptz `json:"created_at"`
+	UpdatedAt         pgtype.Timestamptz `json:"updated_at"`
 }
 
 func (q *Queries) UpdateBotOwner(ctx context.Context, arg UpdateBotOwnerParams) (UpdateBotOwnerRow, error) {
@@ -323,8 +309,6 @@ func (q *Queries) UpdateBotOwner(ctx context.Context, arg UpdateBotOwnerParams) 
 		&i.Timezone,
 		&i.IsActive,
 		&i.Status,
-		&i.MaxContextLoadTime,
-		&i.MaxContextTokens,
 		&i.Language,
 		&i.ReasoningEnabled,
 		&i.ReasoningEffort,
@@ -350,7 +334,7 @@ SET display_name = $2,
     metadata = $6,
     updated_at = now()
 WHERE id = $1
-RETURNING id, owner_user_id, display_name, avatar_url, timezone, is_active, status, max_context_load_time, max_context_tokens, language, reasoning_enabled, reasoning_effort, chat_model_id, search_provider_id, memory_provider_id, heartbeat_enabled, heartbeat_interval, heartbeat_prompt, metadata, created_at, updated_at
+RETURNING id, owner_user_id, display_name, avatar_url, timezone, is_active, status, language, reasoning_enabled, reasoning_effort, chat_model_id, search_provider_id, memory_provider_id, heartbeat_enabled, heartbeat_interval, heartbeat_prompt, metadata, created_at, updated_at
 `
 
 type UpdateBotProfileParams struct {
@@ -363,27 +347,25 @@ type UpdateBotProfileParams struct {
 }
 
 type UpdateBotProfileRow struct {
-	ID                 pgtype.UUID        `json:"id"`
-	OwnerUserID        pgtype.UUID        `json:"owner_user_id"`
-	DisplayName        pgtype.Text        `json:"display_name"`
-	AvatarUrl          pgtype.Text        `json:"avatar_url"`
-	Timezone           pgtype.Text        `json:"timezone"`
-	IsActive           bool               `json:"is_active"`
-	Status             string             `json:"status"`
-	MaxContextLoadTime int32              `json:"max_context_load_time"`
-	MaxContextTokens   int32              `json:"max_context_tokens"`
-	Language           string             `json:"language"`
-	ReasoningEnabled   bool               `json:"reasoning_enabled"`
-	ReasoningEffort    string             `json:"reasoning_effort"`
-	ChatModelID        pgtype.UUID        `json:"chat_model_id"`
-	SearchProviderID   pgtype.UUID        `json:"search_provider_id"`
-	MemoryProviderID   pgtype.UUID        `json:"memory_provider_id"`
-	HeartbeatEnabled   bool               `json:"heartbeat_enabled"`
-	HeartbeatInterval  int32              `json:"heartbeat_interval"`
-	HeartbeatPrompt    string             `json:"heartbeat_prompt"`
-	Metadata           []byte             `json:"metadata"`
-	CreatedAt          pgtype.Timestamptz `json:"created_at"`
-	UpdatedAt          pgtype.Timestamptz `json:"updated_at"`
+	ID                pgtype.UUID        `json:"id"`
+	OwnerUserID       pgtype.UUID        `json:"owner_user_id"`
+	DisplayName       pgtype.Text        `json:"display_name"`
+	AvatarUrl         pgtype.Text        `json:"avatar_url"`
+	Timezone          pgtype.Text        `json:"timezone"`
+	IsActive          bool               `json:"is_active"`
+	Status            string             `json:"status"`
+	Language          string             `json:"language"`
+	ReasoningEnabled  bool               `json:"reasoning_enabled"`
+	ReasoningEffort   string             `json:"reasoning_effort"`
+	ChatModelID       pgtype.UUID        `json:"chat_model_id"`
+	SearchProviderID  pgtype.UUID        `json:"search_provider_id"`
+	MemoryProviderID  pgtype.UUID        `json:"memory_provider_id"`
+	HeartbeatEnabled  bool               `json:"heartbeat_enabled"`
+	HeartbeatInterval int32              `json:"heartbeat_interval"`
+	HeartbeatPrompt   string             `json:"heartbeat_prompt"`
+	Metadata          []byte             `json:"metadata"`
+	CreatedAt         pgtype.Timestamptz `json:"created_at"`
+	UpdatedAt         pgtype.Timestamptz `json:"updated_at"`
 }
 
 func (q *Queries) UpdateBotProfile(ctx context.Context, arg UpdateBotProfileParams) (UpdateBotProfileRow, error) {
@@ -404,8 +386,6 @@ func (q *Queries) UpdateBotProfile(ctx context.Context, arg UpdateBotProfilePara
 		&i.Timezone,
 		&i.IsActive,
 		&i.Status,
-		&i.MaxContextLoadTime,
-		&i.MaxContextTokens,
 		&i.Language,
 		&i.ReasoningEnabled,
 		&i.ReasoningEffort,

@@ -13,9 +13,7 @@ import (
 
 const deleteSettingsByBotID = `-- name: DeleteSettingsByBotID :exec
 UPDATE bots
-SET max_context_load_time = 1440,
-    max_context_tokens = 0,
-    language = 'auto',
+SET language = 'auto',
     reasoning_enabled = false,
     reasoning_effort = 'medium',
     heartbeat_enabled = false,
@@ -43,8 +41,6 @@ func (q *Queries) DeleteSettingsByBotID(ctx context.Context, id pgtype.UUID) err
 const getSettingsByBotID = `-- name: GetSettingsByBotID :one
 SELECT
   bots.id AS bot_id,
-  bots.max_context_load_time,
-  bots.max_context_tokens,
   bots.language,
   bots.reasoning_enabled,
   bots.reasoning_effort,
@@ -75,8 +71,6 @@ WHERE bots.id = $1
 
 type GetSettingsByBotIDRow struct {
 	BotID               pgtype.UUID `json:"bot_id"`
-	MaxContextLoadTime  int32       `json:"max_context_load_time"`
-	MaxContextTokens    int32       `json:"max_context_tokens"`
 	Language            string      `json:"language"`
 	ReasoningEnabled    bool        `json:"reasoning_enabled"`
 	ReasoningEffort     string      `json:"reasoning_effort"`
@@ -100,8 +94,6 @@ func (q *Queries) GetSettingsByBotID(ctx context.Context, id pgtype.UUID) (GetSe
 	var i GetSettingsByBotIDRow
 	err := row.Scan(
 		&i.BotID,
-		&i.MaxContextLoadTime,
-		&i.MaxContextTokens,
 		&i.Language,
 		&i.ReasoningEnabled,
 		&i.ReasoningEffort,
@@ -125,32 +117,28 @@ func (q *Queries) GetSettingsByBotID(ctx context.Context, id pgtype.UUID) (GetSe
 const upsertBotSettings = `-- name: UpsertBotSettings :one
 WITH updated AS (
   UPDATE bots
-  SET max_context_load_time = $1,
-      max_context_tokens = $2,
-      language = $3,
-      reasoning_enabled = $4,
-      reasoning_effort = $5,
-      heartbeat_enabled = $6,
-      heartbeat_interval = $7,
-      heartbeat_prompt = $8,
-      compaction_enabled = $9,
-      compaction_threshold = $10,
-      chat_model_id = COALESCE($11::uuid, bots.chat_model_id),
-      heartbeat_model_id = COALESCE($12::uuid, bots.heartbeat_model_id),
-      compaction_model_id = COALESCE($13::uuid, bots.compaction_model_id),
-      title_model_id = COALESCE($14::uuid, bots.title_model_id),
-      search_provider_id = COALESCE($15::uuid, bots.search_provider_id),
-      memory_provider_id = COALESCE($16::uuid, bots.memory_provider_id),
-      tts_model_id = COALESCE($17::uuid, bots.tts_model_id),
-      browser_context_id = COALESCE($18::uuid, bots.browser_context_id),
+  SET language = $1,
+      reasoning_enabled = $2,
+      reasoning_effort = $3,
+      heartbeat_enabled = $4,
+      heartbeat_interval = $5,
+      heartbeat_prompt = $6,
+      compaction_enabled = $7,
+      compaction_threshold = $8,
+      chat_model_id = COALESCE($9::uuid, bots.chat_model_id),
+      heartbeat_model_id = COALESCE($10::uuid, bots.heartbeat_model_id),
+      compaction_model_id = COALESCE($11::uuid, bots.compaction_model_id),
+      title_model_id = COALESCE($12::uuid, bots.title_model_id),
+      search_provider_id = COALESCE($13::uuid, bots.search_provider_id),
+      memory_provider_id = COALESCE($14::uuid, bots.memory_provider_id),
+      tts_model_id = COALESCE($15::uuid, bots.tts_model_id),
+      browser_context_id = COALESCE($16::uuid, bots.browser_context_id),
       updated_at = now()
-  WHERE bots.id = $19
-  RETURNING bots.id, bots.max_context_load_time, bots.max_context_tokens, bots.language, bots.reasoning_enabled, bots.reasoning_effort, bots.heartbeat_enabled, bots.heartbeat_interval, bots.heartbeat_prompt, bots.compaction_enabled, bots.compaction_threshold, bots.chat_model_id, bots.heartbeat_model_id, bots.compaction_model_id, bots.title_model_id, bots.search_provider_id, bots.memory_provider_id, bots.tts_model_id, bots.browser_context_id
+  WHERE bots.id = $17
+  RETURNING bots.id, bots.language, bots.reasoning_enabled, bots.reasoning_effort, bots.heartbeat_enabled, bots.heartbeat_interval, bots.heartbeat_prompt, bots.compaction_enabled, bots.compaction_threshold, bots.chat_model_id, bots.heartbeat_model_id, bots.compaction_model_id, bots.title_model_id, bots.search_provider_id, bots.memory_provider_id, bots.tts_model_id, bots.browser_context_id
 )
 SELECT
   updated.id AS bot_id,
-  updated.max_context_load_time,
-  updated.max_context_tokens,
   updated.language,
   updated.reasoning_enabled,
   updated.reasoning_effort,
@@ -179,8 +167,6 @@ LEFT JOIN browser_contexts ON browser_contexts.id = updated.browser_context_id
 `
 
 type UpsertBotSettingsParams struct {
-	MaxContextLoadTime  int32       `json:"max_context_load_time"`
-	MaxContextTokens    int32       `json:"max_context_tokens"`
 	Language            string      `json:"language"`
 	ReasoningEnabled    bool        `json:"reasoning_enabled"`
 	ReasoningEffort     string      `json:"reasoning_effort"`
@@ -202,8 +188,6 @@ type UpsertBotSettingsParams struct {
 
 type UpsertBotSettingsRow struct {
 	BotID               pgtype.UUID `json:"bot_id"`
-	MaxContextLoadTime  int32       `json:"max_context_load_time"`
-	MaxContextTokens    int32       `json:"max_context_tokens"`
 	Language            string      `json:"language"`
 	ReasoningEnabled    bool        `json:"reasoning_enabled"`
 	ReasoningEffort     string      `json:"reasoning_effort"`
@@ -224,8 +208,6 @@ type UpsertBotSettingsRow struct {
 
 func (q *Queries) UpsertBotSettings(ctx context.Context, arg UpsertBotSettingsParams) (UpsertBotSettingsRow, error) {
 	row := q.db.QueryRow(ctx, upsertBotSettings,
-		arg.MaxContextLoadTime,
-		arg.MaxContextTokens,
 		arg.Language,
 		arg.ReasoningEnabled,
 		arg.ReasoningEffort,
@@ -247,8 +229,6 @@ func (q *Queries) UpsertBotSettings(ctx context.Context, arg UpsertBotSettingsPa
 	var i UpsertBotSettingsRow
 	err := row.Scan(
 		&i.BotID,
-		&i.MaxContextLoadTime,
-		&i.MaxContextTokens,
 		&i.Language,
 		&i.ReasoningEnabled,
 		&i.ReasoningEffort,

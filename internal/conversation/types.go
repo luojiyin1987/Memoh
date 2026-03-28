@@ -241,14 +241,13 @@ type ChatRequest struct {
 	// Set by the inbound channel processor; called by the resolver at persist time.
 	OutboundAssetCollector func() []OutboundAssetRef `json:"-"`
 
-	Query              string           `json:"query"`
-	Model              string           `json:"model,omitempty"`
-	Provider           string           `json:"provider,omitempty"`
-	MaxContextLoadTime int              `json:"max_context_load_time,omitempty"`
-	Channels           []string         `json:"channels,omitempty"`
-	CurrentChannel     string           `json:"current_channel,omitempty"`
-	Messages           []ModelMessage   `json:"messages,omitempty"`
-	Attachments        []ChatAttachment `json:"attachments,omitempty"`
+	Query          string           `json:"query"`
+	Model          string           `json:"model,omitempty"`
+	Provider       string           `json:"provider,omitempty"`
+	Channels       []string         `json:"channels,omitempty"`
+	CurrentChannel string           `json:"current_channel,omitempty"`
+	Messages       []ModelMessage   `json:"messages,omitempty"`
+	Attachments    []ChatAttachment `json:"attachments,omitempty"`
 }
 
 // ChatResponse is the output of a non-streaming chat call.

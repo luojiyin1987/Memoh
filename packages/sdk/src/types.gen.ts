@@ -1447,8 +1447,6 @@ export type SettingsSettings = {
     heartbeat_interval?: number;
     heartbeat_model_id?: string;
     language?: string;
-    max_context_load_time?: number;
-    max_context_tokens?: number;
     memory_provider_id?: string;
     reasoning_effort?: string;
     reasoning_enabled?: boolean;
@@ -1468,8 +1466,6 @@ export type SettingsUpsertRequest = {
     heartbeat_interval?: number;
     heartbeat_model_id?: string;
     language?: string;
-    max_context_load_time?: number;
-    max_context_tokens?: number;
     memory_provider_id?: string;
     reasoning_effort?: string;
     reasoning_enabled?: boolean;

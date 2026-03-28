@@ -808,8 +808,6 @@
       "memoryHealthUnavailable": "Unavailable",
       "ttsModel": "TTS Model",
       "ttsModelPlaceholder": "Select TTS model",
-      "maxContextLoadTime": "Max Context Load Time",
-      "maxContextTokens": "Max Context Tokens",
       "language": "Language",
       "reasoningEnabled": "Enable Reasoning",
       "reasoningEffort": "Reasoning Effort",

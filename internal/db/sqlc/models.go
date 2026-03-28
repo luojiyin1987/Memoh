@@ -16,8 +16,6 @@ type Bot struct {
 	Timezone            pgtype.Text        `json:"timezone"`
 	IsActive            bool               `json:"is_active"`
 	Status              string             `json:"status"`
-	MaxContextLoadTime  int32              `json:"max_context_load_time"`
-	MaxContextTokens    int32              `json:"max_context_tokens"`
 	Language            string             `json:"language"`
 	ReasoningEnabled    bool               `json:"reasoning_enabled"`
 	ReasoningEffort     string             `json:"reasoning_effort"`

@@ -199,29 +199,6 @@
 
     <Separator />
 
-    <!-- Max Context Load Time -->
-    <div class="space-y-2">
-      <Label>{{ $t('bots.settings.maxContextLoadTime') }}</Label>
-      <Input
-        v-model.number="form.max_context_load_time"
-        type="number"
-        :min="0"
-        :aria-label="$t('bots.settings.maxContextLoadTime')"
-      />
-    </div>
-
-    <!-- Max Context Tokens -->
-    <div class="space-y-2">
-      <Label>{{ $t('bots.settings.maxContextTokens') }}</Label>
-      <Input
-        v-model.number="form.max_context_tokens"
-        type="number"
-        :min="0"
-        placeholder="0"
-        :aria-label="$t('bots.settings.maxContextTokens')"
-      />
-    </div>
-
     <!-- Language -->
     <div class="space-y-2">
       <Label>{{ $t('bots.settings.language') }}</Label>
@@ -492,8 +469,6 @@ const form = reactive({
   memory_provider_id: '',
   tts_model_id: '',
   browser_context_id: '',
-  max_context_load_time: 0,
-  max_context_tokens: 0,
   language: '',
   reasoning_enabled: false,
   reasoning_effort: 'medium',
@@ -617,8 +592,6 @@ watch(settings, (val) => {
     form.memory_provider_id = val.memory_provider_id ?? ''
     form.tts_model_id = val.tts_model_id ?? ''
     form.browser_context_id = val.browser_context_id ?? ''
-    form.max_context_load_time = val.max_context_load_time ?? 0
-    form.max_context_tokens = val.max_context_tokens ?? 0
     form.language = val.language ?? ''
     form.reasoning_enabled = val.reasoning_enabled ?? false
     form.reasoning_effort = val.reasoning_effort || 'medium'
@@ -635,8 +608,6 @@ const hasChanges = computed(() => {
     || form.memory_provider_id !== (s.memory_provider_id ?? '')
     || form.tts_model_id !== (s.tts_model_id ?? '')
     || form.browser_context_id !== (s.browser_context_id ?? '')
-    || form.max_context_load_time !== (s.max_context_load_time ?? 0)
-    || form.max_context_tokens !== (s.max_context_tokens ?? 0)
     || form.language !== (s.language ?? '')
     || form.reasoning_enabled !== (s.reasoning_enabled ?? false)
     || form.reasoning_effort !== (s.reasoning_effort || 'medium')

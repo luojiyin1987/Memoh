@@ -93,7 +93,7 @@ func (*fakeRows) Conn() *pgx.Conn        { return nil }
 func makeBotRow(botID, ownerUserID pgtype.UUID) *fakeRow {
 	return &fakeRow{
 		scanFunc: func(dest ...any) error {
-			if len(dest) < 24 {
+			if len(dest) < 22 {
 				return pgx.ErrNoRows
 			}
 			*dest[0].(*pgtype.UUID) = botID
@@ -103,23 +103,21 @@ func makeBotRow(botID, ownerUserID pgtype.UUID) *fakeRow {
 			*dest[4].(*pgtype.Text) = pgtype.Text{}
 			*dest[5].(*bool) = true
 			*dest[6].(*string) = bots.BotStatusReady
-			*dest[7].(*int32) = 30
-			*dest[8].(*int32) = 0
-			*dest[9].(*string) = ""
-			*dest[10].(*bool) = false
-			*dest[11].(*string) = "medium"
-			*dest[12].(*pgtype.UUID) = pgtype.UUID{}
-			*dest[13].(*pgtype.UUID) = pgtype.UUID{}
-			*dest[14].(*pgtype.UUID) = pgtype.UUID{}
-			*dest[15].(*bool) = false
-			*dest[16].(*int32) = 30
-			*dest[17].(*string) = ""
-			*dest[18].(*bool) = false                // CompactionEnabled
-			*dest[19].(*int32) = 100000              // CompactionThreshold
-			*dest[20].(*pgtype.UUID) = pgtype.UUID{} // CompactionModelID
-			*dest[21].(*[]byte) = []byte(`{}`)
-			*dest[22].(*pgtype.Timestamptz) = pgtype.Timestamptz{}
-			*dest[23].(*pgtype.Timestamptz) = pgtype.Timestamptz{}
+			*dest[7].(*string) = ""                  // Language
+			*dest[8].(*bool) = false                 // ReasoningEnabled
+			*dest[9].(*string) = "medium"            // ReasoningEffort
+			*dest[10].(*pgtype.UUID) = pgtype.UUID{} // ChatModelID
+			*dest[11].(*pgtype.UUID) = pgtype.UUID{} // SearchProviderID
+			*dest[12].(*pgtype.UUID) = pgtype.UUID{} // MemoryProviderID
+			*dest[13].(*bool) = false                // HeartbeatEnabled
+			*dest[14].(*int32) = 30                  // HeartbeatInterval
+			*dest[15].(*string) = ""                 // HeartbeatPrompt
+			*dest[16].(*bool) = false                // CompactionEnabled
+			*dest[17].(*int32) = 100000              // CompactionThreshold
+			*dest[18].(*pgtype.UUID) = pgtype.UUID{} // CompactionModelID
+			*dest[19].(*[]byte) = []byte(`{}`)
+			*dest[20].(*pgtype.Timestamptz) = pgtype.Timestamptz{}
+			*dest[21].(*pgtype.Timestamptz) = pgtype.Timestamptz{}
 			return nil
 		},
 	}

@@ -153,15 +153,6 @@ func decodeIndexedByteObject(raw json.RawMessage) ([]byte, bool) {
 	return out, true
 }
 
-func coalescePositiveInt(values ...int) int {
-	for _, v := range values {
-		if v > 0 {
-			return v
-		}
-	}
-	return defaultMaxContextMinutes
-}
-
 func nonNilModelMessages(m []conversation.ModelMessage) []conversation.ModelMessage {
 	if m == nil {
 		return []conversation.ModelMessage{}
