@@ -575,6 +575,7 @@ export type ChannelUpsertConfigRequest = {
 
 export type CompactionListLogsResponse = {
     items?: Array<CompactionLog>;
+    total_count?: number;
 };
 
 export type CompactionLog = {
@@ -1053,6 +1054,7 @@ export type HandlersUpdateSessionRequest = {
 
 export type HeartbeatListLogsResponse = {
     items?: Array<HeartbeatLog>;
+    total_count?: number;
 };
 
 export type HeartbeatLog = {
@@ -1320,6 +1322,7 @@ export type ScheduleCreateRequest = {
 
 export type ScheduleListLogsResponse = {
     items?: Array<ScheduleLog>;
+    total_count?: number;
 };
 
 export type ScheduleListResponse = {
@@ -2268,13 +2271,13 @@ export type GetBotsByBotIdCompactionLogsData = {
     };
     query?: {
         /**
-         * Before timestamp (RFC3339)
-         */
-        before?: string;
-        /**
          * Limit
          */
         limit?: number;
+        /**
+         * Offset
+         */
+        offset?: number;
     };
     url: '/bots/{bot_id}/compaction/logs';
 };
@@ -3539,13 +3542,13 @@ export type GetBotsByBotIdHeartbeatLogsData = {
     };
     query?: {
         /**
-         * Before timestamp (RFC3339)
-         */
-        before?: string;
-        /**
          * Limit
          */
         limit?: number;
+        /**
+         * Offset
+         */
+        offset?: number;
     };
     url: '/bots/{bot_id}/heartbeat/logs';
 };
@@ -4776,13 +4779,13 @@ export type GetBotsByBotIdScheduleLogsData = {
     };
     query?: {
         /**
-         * Before timestamp (RFC3339)
-         */
-        before?: string;
-        /**
          * Limit
          */
         limit?: number;
+        /**
+         * Offset
+         */
+        offset?: number;
     };
     url: '/bots/{bot_id}/schedule/logs';
 };
@@ -4930,13 +4933,13 @@ export type GetBotsByBotIdScheduleByIdLogsData = {
     };
     query?: {
         /**
-         * Before timestamp (RFC3339)
-         */
-        before?: string;
-        /**
          * Limit
          */
         limit?: number;
+        /**
+         * Offset
+         */
+        offset?: number;
     };
     url: '/bots/{bot_id}/schedule/{id}/logs';
 };

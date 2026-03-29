@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"log/slog"
 	"strings"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
@@ -151,35 +150,38 @@ func (s *Service) completeLog(ctx context.Context, logID pgtype.UUID, status, su
 }
 
 // ListLogs returns paginated compaction logs for a bot.
-func (s *Service) ListLogs(ctx context.Context, botID string, before *time.Time, limit int) ([]Log, error) {
+func (s *Service) ListLogs(ctx context.Context, botID string, limit, offset int) ([]Log, int64, error) {
 	botUUID, err := db.ParseUUID(botID)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
-	var beforeTS pgtype.Timestamptz
-	if before != nil {
-		beforeTS = pgtype.Timestamptz{Time: *before, Valid: true}
+	if limit <= 0 || limit > 100 {
+		limit = 50
+	}
+	if offset < 0 {
+		offset = 0
 	}
 
-	clampedLimit := limit
-	if clampedLimit > 1000 {
-		clampedLimit = 1000
+	total, err := s.queries.CountCompactionLogsByBot(ctx, botUUID)
+	if err != nil {
+		return nil, 0, err
 	}
+
 	rows, err := s.queries.ListCompactionLogsByBot(ctx, sqlc.ListCompactionLogsByBotParams{
-		BotID:   botUUID,
-		Column2: beforeTS,
-		Limit:   int32(clampedLimit), //nolint:gosec // clamped above
+		BotID:  botUUID,
+		Limit:  int32(limit),  //nolint:gosec // clamped above
+		Offset: int32(offset), //nolint:gosec // validated above
 	})
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	logs := make([]Log, len(rows))
 	for i, r := range rows {
 		logs[i] = toLog(r)
 	}
-	return logs, nil
+	return logs, total, nil
 }
 
 // DeleteLogs deletes all compaction logs for a bot.

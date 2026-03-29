@@ -957,6 +957,8 @@ definitions:
         items:
           $ref: '#/definitions/compaction.Log'
         type: array
+      total_count:
+        type: integer
     type: object
   compaction.Log:
     properties:
@@ -1723,6 +1725,8 @@ definitions:
         items:
           $ref: '#/definitions/heartbeat.Log'
         type: array
+      total_count:
+        type: integer
     type: object
   heartbeat.Log:
     properties:
@@ -2174,6 +2178,8 @@ definitions:
         items:
           $ref: '#/definitions/schedule.Log'
         type: array
+      total_count:
+        type: integer
     type: object
   schedule.ListResponse:
     properties:
@@ -3173,14 +3179,15 @@ paths:
         name: bot_id
         required: true
         type: string
-      - description: Before timestamp (RFC3339)
-        in: query
-        name: before
-        type: string
       - default: 50
         description: Limit
         in: query
         name: limit
+        type: integer
+      - default: 0
+        description: Offset
+        in: query
+        name: offset
         type: integer
       responses:
         "200":
@@ -4179,14 +4186,15 @@ paths:
         name: bot_id
         required: true
         type: string
-      - description: Before timestamp (RFC3339)
-        in: query
-        name: before
-        type: string
       - default: 50
         description: Limit
         in: query
         name: limit
+        type: integer
+      - default: 0
+        description: Offset
+        in: query
+        name: offset
         type: integer
       responses:
         "200":
@@ -5274,14 +5282,15 @@ paths:
         name: id
         required: true
         type: string
-      - description: Before timestamp (RFC3339)
-        in: query
-        name: before
-        type: string
       - default: 50
         description: Limit
         in: query
         name: limit
+        type: integer
+      - default: 0
+        description: Offset
+        in: query
+        name: offset
         type: integer
       responses:
         "200":
@@ -5330,14 +5339,15 @@ paths:
         name: bot_id
         required: true
         type: string
-      - description: Before timestamp (RFC3339)
-        in: query
-        name: before
-        type: string
       - default: 50
         description: Limit
         in: query
         name: limit
+        type: integer
+      - default: 0
+        description: Offset
+        in: query
+        name: offset
         type: integer
       responses:
         "200":

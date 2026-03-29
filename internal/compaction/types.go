@@ -22,7 +22,8 @@ type Log struct {
 
 // ListLogsResponse is the API response for listing compaction logs.
 type ListLogsResponse struct {
-	Items []Log `json:"items"`
+	Items      []Log `json:"items"`
+	TotalCount int64 `json:"total_count"`
 }
 
 // TriggerConfig holds the parameters needed to trigger a compaction.

@@ -218,8 +218,7 @@
     "importSuccess": "Successfully imported {created} models, skipped {skipped}",
     "importFailed": "Failed to import models",
     "importConfirmHint": "Models will be imported from this provider's API with default compatibilities (vision, tool-call, reasoning).",
-    "showingCount": "Showing {count} of {total}",
-    "showMore": "Show More"
+    "showingCount": "Showing {count} of {total}"
   },
   "provider": {
     "add": "Add Provider",
@@ -1019,7 +1018,6 @@
       "title": "Compaction Logs",
       "loadFailed": "Failed to load compaction logs",
       "empty": "No compaction logs",
-      "loadMore": "Load More",
       "clearLogs": "Clear Logs",
       "clearConfirm": "Are you sure you want to clear all compaction logs? This cannot be undone.",
       "clearSuccess": "Compaction logs cleared",
@@ -1037,7 +1035,6 @@
       "title": "Heartbeat Logs",
       "loadFailed": "Failed to load heartbeat logs",
       "empty": "No heartbeat logs",
-      "loadMore": "Load More",
       "clearLogs": "Clear Logs",
       "clearConfirm": "Are you sure you want to clear all heartbeat logs? This cannot be undone.",
       "clearSuccess": "Heartbeat logs cleared",
@@ -1071,7 +1068,6 @@
       "title": "History",
       "loadFailed": "Failed to load history",
       "empty": "No history messages",
-      "loadMore": "Load More",
       "messageCount": "{count} messages",
       "selectAll": "Select all",
       "deleteSelectedConfirm": "Are you sure you want to delete the selected {count} message(s)? This will clear all history and cannot be undone.",
