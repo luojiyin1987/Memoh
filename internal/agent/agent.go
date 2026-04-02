@@ -63,10 +63,14 @@ func (a *Agent) Generate(ctx context.Context, cfg RunConfig) (*GenerateResult, e
 }
 
 func (a *Agent) runStream(ctx context.Context, cfg RunConfig, ch chan<- StreamEvent) {
-	tools, err := a.assembleTools(ctx, cfg)
-	if err != nil {
-		ch <- StreamEvent{Type: EventError, Error: fmt.Sprintf("assemble tools: %v", err)}
-		return
+	var tools []sdk.Tool
+	if cfg.SupportsToolCall {
+		var err error
+		tools, err = a.assembleTools(ctx, cfg)
+		if err != nil {
+			ch <- StreamEvent{Type: EventError, Error: fmt.Sprintf("assemble tools: %v", err)}
+			return
+		}
 	}
 	tools, readMediaState := decorateReadMediaTools(cfg.Model, tools)
 
@@ -312,9 +316,13 @@ func (a *Agent) runStream(ctx context.Context, cfg RunConfig, ch chan<- StreamEv
 }
 
 func (a *Agent) runGenerate(ctx context.Context, cfg RunConfig) (*GenerateResult, error) {
-	tools, err := a.assembleTools(ctx, cfg)
-	if err != nil {
-		return nil, fmt.Errorf("assemble tools: %w", err)
+	var tools []sdk.Tool
+	if cfg.SupportsToolCall {
+		var err error
+		tools, err = a.assembleTools(ctx, cfg)
+		if err != nil {
+			return nil, fmt.Errorf("assemble tools: %w", err)
+		}
 	}
 	tools, readMediaState := decorateReadMediaTools(cfg.Model, tools)
 
