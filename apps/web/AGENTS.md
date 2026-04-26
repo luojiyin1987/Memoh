@@ -120,23 +120,14 @@ src/
 │   │       ├── thinking-block.vue     # Collapsible thinking/reasoning block
 │   │       ├── attachment-block.vue   # Attachment grid (images, audio, files)
 │   │       ├── media-gallery-lightbox.vue  # Fullscreen media lightbox
-│   │       ├── tool-call-block.vue    # Generic tool call wrapper block
-│   │       ├── tool-call-generic.vue  # Generic tool call (name, status, JSON I/O)
-│   │       ├── tool-call-list.vue     # File listing tool display
-│   │       ├── tool-call-read.vue     # File read tool display
-│   │       ├── tool-call-write.vue    # File write tool display
-│   │       ├── tool-call-edit.vue     # File edit tool display
-│   │       ├── tool-call-exec.vue     # Command execution tool display
-│   │       ├── tool-call-web-search.vue    # Web search tool display
-│   │       ├── tool-call-web-fetch.vue     # Web fetch tool display
-│   │       ├── tool-call-browser.vue       # Browser action tool display
-│   │       ├── tool-call-memory.vue        # Memory read/write tool display
-│   │       ├── tool-call-message.vue       # Send message tool display
-│   │       ├── tool-call-email.vue         # Email tool display
-│   │       ├── tool-call-schedule.vue      # Schedule tool display
-│   │       ├── tool-call-contacts.vue      # Contacts tool display
-│   │       ├── tool-call-subagent.vue      # Sub-agent tool display
-│   │       ├── tool-call-skill.vue         # Skill activation tool display
+│   │       ├── tool-call-block.vue    # Tool call wrapper (renders inline component)
+│   │       ├── tool-call-inline.vue   # Inline tool call row: (icon) action target chevron
+│   │       ├── tool-call-registry.ts  # Tool name → display (icon, action, target, detail)
+│   │       ├── tool-call-detail-exec.vue    # Exec stdout/stderr/error detail
+│   │       ├── tool-call-detail-edit.vue    # Edit old/new diff detail
+│   │       ├── tool-call-detail-spawn.vue   # Spawn (subagent) task list + links
+│   │       ├── tool-call-detail-image.vue   # generate_image preview
+│   │       ├── tool-call-detail-generic.vue # Generic input/result JSON detail
 │   │       ├── schedule-trigger-block.vue  # Schedule trigger display
 │   │       └── heartbeat-trigger-block.vue # Heartbeat trigger display
 │   ├── bots/                  #   Bot list + detail (tabs: overview, memory, channels, etc.)

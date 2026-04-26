@@ -52,15 +52,4 @@ export default [
       }],
     },
   },
-  {
-    files: [
-      'apps/web/src/pages/chat/components/tool-call-edit.vue',
-      'apps/web/src/pages/chat/components/tool-call-write.vue',
-      'apps/web/src/pages/home/components/tool-call-edit.vue',
-      'apps/web/src/pages/home/components/tool-call-write.vue',
-    ],
-    rules: {
-      'vue/no-v-html': 'off',
-    },
-  },
 ]
