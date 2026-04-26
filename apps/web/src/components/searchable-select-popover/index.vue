@@ -15,7 +15,10 @@
           :aria-label="ariaLabel || placeholder"
           class="w-full justify-between font-normal"
         >
-          <span class="truncate">
+          <span
+            class="truncate"
+            :title="displayLabel || placeholder"
+          >
             {{ displayLabel || placeholder }}
           </span>
           <Search
@@ -80,33 +83,39 @@
           >
             <Check
               v-if="selected === option.value"
-              class="size-3.5"
+              class="size-3.5 shrink-0"
             />
             <span
               v-else
-              class="size-3.5"
+              class="size-3.5 shrink-0"
             />
             <slot
               name="option-icon"
               :option="option"
             />
-            <slot
-              name="option-label"
-              :option="option"
-            >
-              <span class="truncate">{{ option.label }}</span>
-            </slot>
-            <slot
-              name="option-suffix"
-              :option="option"
-            >
-              <span
-                v-if="option.description"
-                class="ml-auto text-xs text-muted-foreground"
+            <span class="flex min-w-0 flex-1 items-center gap-2">
+              <slot
+                name="option-label"
+                :option="option"
               >
-                {{ option.description }}
-              </span>
-            </slot>
+                <span
+                  class="truncate flex-1 text-left"
+                  :title="option.label"
+                >{{ option.label }}</span>
+              </slot>
+              <slot
+                name="option-suffix"
+                :option="option"
+              >
+                <span
+                  v-if="option.description"
+                  class="ml-auto text-xs text-muted-foreground truncate max-w-[50%] text-right"
+                  :title="option.description"
+                >
+                  {{ option.description }}
+                </span>
+              </slot>
+            </span>
           </button>
         </div>
       </div>

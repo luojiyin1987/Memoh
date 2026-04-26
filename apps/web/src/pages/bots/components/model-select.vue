@@ -8,7 +8,10 @@
         :aria-label="placeholder || 'Select model'"
         class="w-full justify-between font-normal"
       >
-        <span class="truncate">
+        <span
+          class="truncate"
+          :title="displayLabel || placeholder"
+        >
           {{ displayLabel || placeholder }}
         </span>
         <Search

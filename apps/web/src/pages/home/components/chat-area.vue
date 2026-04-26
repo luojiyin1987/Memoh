@@ -164,6 +164,7 @@
                         variant="ghost"
                         :disabled="!currentBotId || activeChatReadOnly"
                         class="gap-0.5 text-muted-foreground max-w-40"
+                        :title="selectedModelLabel"
                       >
                         <span class="truncate text-[11px]">{{ selectedModelLabel }}</span>
                         <ChevronDown class="size-3 shrink-0 opacity-50" />

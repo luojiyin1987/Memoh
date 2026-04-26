@@ -17,12 +17,15 @@
         :aria-label="placeholder || 'Select browser context'"
         class="w-full justify-between font-normal"
       >
-        <span class="flex items-center gap-2 truncate">
+        <span class="flex min-w-0 items-center gap-2 truncate">
           <AppWindow
             v-if="selected"
-            class="size-3.5 text-muted-foreground"
+            class="size-3.5 shrink-0 text-muted-foreground"
           />
-          <span class="truncate">{{ displayLabel || placeholder }}</span>
+          <span
+            class="truncate"
+            :title="displayLabel || placeholder"
+          >{{ displayLabel || placeholder }}</span>
         </span>
         <Search
           class="ml-2 size-3.5 shrink-0 text-muted-foreground"
@@ -33,14 +36,15 @@
     <template #option-icon="{ option }">
       <AppWindow
         v-if="option.value"
-        class="size-3.5 text-muted-foreground"
+        class="size-3.5 shrink-0 text-muted-foreground"
       />
     </template>
 
     <template #option-label="{ option }">
       <span
-        class="truncate"
+        class="truncate flex-1 text-left"
         :class="{ 'text-muted-foreground': !option.value }"
+        :title="option.label"
       >
         {{ option.label }}
       </span>
