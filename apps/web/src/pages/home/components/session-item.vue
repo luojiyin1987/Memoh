@@ -52,7 +52,6 @@
         <span
           v-if="session.updated_at"
           class="text-[8px] text-muted-foreground ml-1 shrink-0"
-          :class="{ 'group-hover:hidden': true, 'hidden': menuOpen }"
         >
           {{ formatTime(session.updated_at) }}
         </span>

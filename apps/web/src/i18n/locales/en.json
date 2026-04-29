@@ -222,7 +222,9 @@
         "noSubject": "(no subject)",
         "unnamedSchedule": "(unnamed)",
         "editOld": "Old",
-        "editNew": "New"
+        "editNew": "New",
+        "attachments": "Attachments",
+        "replyTo": "Reply to"
       }
     },
     "unknownUser": "{platform} User",

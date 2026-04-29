@@ -218,7 +218,9 @@
         "noSubject": "（无主题）",
         "unnamedSchedule": "（未命名）",
         "editOld": "原文",
-        "editNew": "新文"
+        "editNew": "新文",
+        "attachments": "附件",
+        "replyTo": "回复"
       }
     },
     "unknownUser": "{platform}用户",

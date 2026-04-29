@@ -68,9 +68,6 @@ func (c *UIMessageStreamConverter) HandleEvent(event UIMessageStreamEvent) []UIM
 		return nil
 
 	case "tool_call_start":
-		if isStreamHiddenTool(event.ToolName) {
-			return nil
-		}
 		state := c.findToolState(event.ToolCallID, event.ToolName)
 		if state == nil {
 			state = &uiToolStreamState{
@@ -99,9 +96,6 @@ func (c *UIMessageStreamConverter) HandleEvent(event UIMessageStreamEvent) []UIM
 		return []UIMessage{cloneToolStreamMessage(state.Message)}
 
 	case "tool_call_progress":
-		if isStreamHiddenTool(event.ToolName) {
-			return nil
-		}
 		state := c.findToolState(event.ToolCallID, event.ToolName)
 		if state == nil {
 			state = &uiToolStreamState{
@@ -164,9 +158,6 @@ func (c *UIMessageStreamConverter) HandleEvent(event UIMessageStreamEvent) []UIM
 		return []UIMessage{cloneToolStreamMessage(state.Message)}
 
 	case "tool_call_end":
-		if isStreamHiddenTool(event.ToolName) {
-			return nil
-		}
 		state := c.findToolState(event.ToolCallID, event.ToolName)
 		if state == nil {
 			state = &uiToolStreamState{
@@ -201,15 +192,6 @@ func (c *UIMessageStreamConverter) HandleEvent(event UIMessageStreamEvent) []UIM
 
 	default:
 		return nil
-	}
-}
-
-func isStreamHiddenTool(toolName string) bool {
-	switch strings.ToLower(strings.TrimSpace(toolName)) {
-	case "send":
-		return true
-	default:
-		return false
 	}
 }
 

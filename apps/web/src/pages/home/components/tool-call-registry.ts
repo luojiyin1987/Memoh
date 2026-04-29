@@ -43,6 +43,7 @@ import ToolCallDetailExec from './tool-call-detail-exec.vue'
 import ToolCallDetailImage from './tool-call-detail-image.vue'
 import ToolCallDetailMemory from './tool-call-detail-memory.vue'
 import ToolCallDetailSchedule from './tool-call-detail-schedule.vue'
+import ToolCallDetailSend from './tool-call-detail-send.vue'
 import ToolCallDetailSpawn from './tool-call-detail-spawn.vue'
 import ToolCallDetailWebFetch from './tool-call-detail-web-fetch.vue'
 import ToolCallDetailWebSearch from './tool-call-detail-web-search.vue'
@@ -230,6 +231,8 @@ export function getToolDisplay(block: ToolCallBlock): ToolDisplay {
         actionKey: 'send',
         target: display,
         fullTarget: text || target,
+        detail: ToolCallDetailSend,
+        defaultOpen: true,
       }
     }
     case 'react': {
