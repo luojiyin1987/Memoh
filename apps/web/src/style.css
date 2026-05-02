@@ -67,15 +67,9 @@
   margin: 1rem 0;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  /* markstream-vue defaults this to `stable`, which permanently reserves a
-   * scrollbar gutter on the right and creates a visible empty band. We only
-   * want the gutter when the table actually overflows. */
-  scrollbar-gutter: auto;
+  scrollbar-gutter: auto !important;
 }
 
-/* The <table> element ships with a `my-8` utility class (2rem top/bottom
- * margin) that creates a large empty band inside our wrapper. Zero it out
- * so the header sits flush against the rounded top edge. */
 .markstream-vue .table-node-wrapper .table-node {
   margin: 0;
 }
