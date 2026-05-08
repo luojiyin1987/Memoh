@@ -633,7 +633,7 @@ func (p *ChannelInboundProcessor) HandleInbound(ctx context.Context, cfg channel
 					Sender:  sender,
 					Ident:   identity,
 					Text:    text,
-					Attachs: attachments,
+					Attachments: attachments,
 				})
 				p.sendModeConfirmation(ctx, sender, msg, identity, "queue")
 				return nil
