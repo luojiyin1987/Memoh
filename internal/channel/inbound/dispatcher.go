@@ -41,7 +41,7 @@ type QueuedTask struct {
 	Sender  channel.StreamReplySender
 	Ident   InboundIdentity
 	Text    string
-	Attachs []conversation.ChatAttachment
+	Attachments []conversation.ChatAttachment
 }
 
 // PersistFunc is a deferred persistence closure called after the active stream
